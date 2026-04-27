@@ -8,15 +8,11 @@ int main()
 
 	InitWindow(1000, 1000, "Chess");
 	Engine game;
-	
-	Camera2D MainCam2D;
 
-	Tile TitleLoader;
-	InitializeCam Icam;
-	Icam.Setvalues(MainCam2D, scr_width, scr_height);
-	
+	Tile TileLoader;
+	InitializeCam Icam(scr_width, scr_height);
 
-	game.AddObjects(&TitleLoader);
+	game.AddObjects(&TileLoader);
 	game.AddObjects(&Icam);
 	
 	game.Run();

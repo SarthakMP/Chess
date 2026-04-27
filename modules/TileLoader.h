@@ -1,5 +1,6 @@
 #pragma once
 #include"Behavior.h"
+#include<iostream> //DEBUGGING ONLY
 static class Tile : public Behavior {
 	
 	Color White = Color(255, 255, 255, 255);
@@ -8,7 +9,7 @@ static class Tile : public Behavior {
 
 	std::vector<std::vector<Vector2>> Pieces_pos;
 	std::vector<Rectangle> Tiles;
-
+	
 	void CreateTiles() {
 
 		Tiles.reserve(64);
@@ -17,29 +18,35 @@ static class Tile : public Behavior {
 		for (int r = -4; r < 4; r++) {
 			for (int c = -4; c < 4; c++) {
 				Vector2 pos = { c * 100.0f,r * 100.0f };
-				Rectangle Tile = Rectangle(c * 100, r * 100, 99, 99);
+				Rectangle Tile = Rectangle(pos.x, pos.y, 99, 99);
 				Tiles.push_back(Tile);
 				Pieces_pos[r + 4][c + 4] = pos;
+				
 			}
 		}
 	}
 
 	void Start() override {
 		CreateTiles();
+		
 	}
 
 	void Update() override{
+		
+		
 		ClearBackground(GetColor(0x2A4055));
+
 		//Draw the tiles
-		for (int i = 0; i < 8; i++) {
-			for (int j = 0; j < 8; j++)
+		for (size_t i = 0; i < 8; i++) {
+			for (size_t j = 0; j < 8; j++)
 			{
 				//FOR TILES
 				Color WorB = (i + j) % 2 == 0 ? White : Black;
 				DrawRectangleRec(Tiles[j + 8 * i], WorB);
-
 			}
 		}
+		
+		
 	}
 
 

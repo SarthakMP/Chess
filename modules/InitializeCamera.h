@@ -1,31 +1,24 @@
 #pragma once	
 #include"Behavior.h"
+#include<iostream>
 class InitializeCam : public Behavior  {
-
-	Camera2D cam;
+public:
 	int width, height;
+	InitializeCam(int in_w, int in_h) : width(in_w), height(in_h) {}
 
-	void Initializer(Camera2D& cam,int& scr_width,int& scr_height) {
-
-		cam.offset = Vector2(scr_width/2, scr_height/2);
-		cam.rotation = 0;
-		cam.zoom = 1.0;
-
+	void Initializer() {
+		Engine::cam.offset = Vector2(width/2, height/2);
+		Engine::cam.rotation = 0.0f;
+		Engine::cam.zoom = 1.0f;
 	}
 
 	void Start() override {
-		
+		Initializer();
 	}
 
 	void Update() override {
-		Initializer(cam, width, height);
+	
 	}
 
-public:
-	void Setvalues(Camera2D& c, int& in_width, int& in_height) {
-		cam = c;
-		width = in_width;
-		height = in_height;
-	}
 
 };
