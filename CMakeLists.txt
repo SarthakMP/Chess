@@ -17,7 +17,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Add source to this project's executable.
 add_executable (Chess   "include/raylib.h" 
 "include/raymath.h" "include/rlgl.h"   "Main.cpp" 
-"modules/Piece.h"  "modules/TileLoader.h"  "include/Behavior.h" "modules/InitializeCamera.h"  ) 
+"modules/Piece.h"  "modules/TileLoader.h"  "include/Behavior.h" "modules/InitializeCamera.h"   "modules/IconLoader.h"  "modules/PiecePlacer.h" "modules/CollisionDetection.h" "modules/Mouse.h" "modules/Point.h") 
 
 target_include_directories(Chess PRIVATE include)
 target_include_directories(Chess PRIVATE modules)

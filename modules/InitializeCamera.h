@@ -1,7 +1,7 @@
 #pragma once	
 #include"Behavior.h"
 #include<iostream>
-class InitializeCam : public Behavior  {
+class InitializeCam : public BehaviorAdapter {
 public:
 	int width, height;
 	InitializeCam(int in_w, int in_h) : width(in_w), height(in_h) {}

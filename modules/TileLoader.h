@@ -1,14 +1,17 @@
 #pragma once
 #include"Behavior.h"
 #include<iostream> //DEBUGGING ONLY
-static class Tile : public Behavior {
+static class Tile : public BehaviorAdapter {
 	
 	Color White = Color(255, 255, 255, 255);
 	Color Black = Color(0, 0, 0, 255);
 	Color Brown = Color(100, 50, 0, 255);
 
-	std::vector<std::vector<Vector2>> Pieces_pos;
-	std::vector<Rectangle> Tiles;
+public:
+	static inline std::vector<std::vector<Vector2>> Pieces_pos;
+	static inline std::vector<Rectangle> Tiles;
+private:
+	
 	
 	void CreateTiles() {
 
@@ -28,7 +31,6 @@ static class Tile : public Behavior {
 
 	void Start() override {
 		CreateTiles();
-		
 	}
 
 	void Update() override{
@@ -41,7 +43,7 @@ static class Tile : public Behavior {
 			for (size_t j = 0; j < 8; j++)
 			{
 				//FOR TILES
-				Color WorB = (i + j) % 2 == 0 ? White : Black;
+				Color WorB = (i + j) % 2 == 0 ? White : Brown;
 				DrawRectangleRec(Tiles[j + 8 * i], WorB);
 			}
 		}
