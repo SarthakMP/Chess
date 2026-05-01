@@ -21,10 +21,9 @@ add_executable (Chess   "include/raylib.h"
 
 target_include_directories(Chess PRIVATE include)
 target_include_directories(Chess PRIVATE modules)
-target_link_directories(Chess PRIVATE "${CMAKE_SOURCE_DIR}/lib")
 
 target_link_libraries(Chess PRIVATE 
-    raylib 
+    "${CMAKE_SOURCE_DIR}/lib/raylib.lib"
     winmm 
     gdi32 
     opengl32 

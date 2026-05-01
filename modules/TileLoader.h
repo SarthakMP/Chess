@@ -7,7 +7,10 @@ static class Tile : public BehaviorAdapter {
 	Color Black = Color(0, 0, 0, 255);
 	Color Brown = Color(100, 50, 0, 255);
 
+	
+
 public:
+	static const int tile_h = 100, tile_w = 100;
 	static inline std::vector<std::vector<Vector2>> Pieces_pos;
 	static inline std::vector<Rectangle> Tiles;
 private:
@@ -20,12 +23,13 @@ private:
 
 		for (int r = -4; r < 4; r++) {
 			for (int c = -4; c < 4; c++) {
-				Vector2 pos = { c * 100.0f,r * 100.0f };
-				Rectangle Tile = Rectangle(pos.x, pos.y, 99, 99);
+				Vector2 pos = { c * 100.0f,r *100.0f};
+				std::cout << '[' << pos.x << "," << pos.y<<']' << " ";
+				Rectangle Tile = Rectangle(pos.x, pos.y, tile_w-1, tile_h-1);
 				Tiles.push_back(Tile);
 				Pieces_pos[r + 4][c + 4] = pos;
 				
-			}
+			}std::cout <<"\n";
 		}
 	}
 
@@ -43,7 +47,7 @@ private:
 			for (size_t j = 0; j < 8; j++)
 			{
 				//FOR TILES
-				Color WorB = (i + j) % 2 == 0 ? White : Brown;
+				Color WorB = (i + j) % 2 == 0 ? Brown : White;
 				DrawRectangleRec(Tiles[j + 8 * i], WorB);
 			}
 		}

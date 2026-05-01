@@ -63,12 +63,13 @@ class PiecePlacer : public BehaviorAdapter {
 	}
 
 	std::vector<Piece> StoredPiece;
-	
-	
+public:
+	static inline std::vector<std::vector<Piece>> FinalPieceOutput;
+private:
 	void SetIcons() {
 		StoredPiece.reserve(12);
 		
-		Piece::FinalPieceOutput.assign(8, std::vector<Piece>(8));
+		FinalPieceOutput.assign(8, std::vector<Piece>(8));
 		
 		int size = IconLoader::Images.size();
 		for (size_t i = 0; i < size; i++) {
@@ -87,74 +88,75 @@ class PiecePlacer : public BehaviorAdapter {
 
 		}
 
-		for (size_t r = 0; r < Engine::Pos_matrix.size(); r++) {
+		for (size_t r = 0; r < 8; r++) {
 			
-			for (size_t c = 0; c < Engine::Pos_matrix[r].size(); c++)
+			for (size_t c = 0; c < 8; c++)
 			{	
 				switch (Engine::Pos_matrix[r][c]) {
 					
 					case Engine::B_BISHOP: {
+						std::cout << r << "," << c << "\n";
 						StoredPiece[0]._Pos = Tile::Pieces_pos[r][c];
-						Piece::FinalPieceOutput[r][c] = (StoredPiece[0]);
+						FinalPieceOutput[r][c] = (StoredPiece[0]);
 						break;
 					}
 					case Engine::B_KING: {
 						StoredPiece[1]._Pos = Tile::Pieces_pos[r][c];
-						Piece::FinalPieceOutput[r][c] = (StoredPiece[1]);
+						FinalPieceOutput[r][c] = (StoredPiece[1]);
 						break;
 					}
 					case Engine::B_KNIGHT: {
 						StoredPiece[2]._Pos = Tile::Pieces_pos[r][c];
-						Piece::FinalPieceOutput[r][c] =(StoredPiece[2]);
+						FinalPieceOutput[r][c] =(StoredPiece[2]);
 						break;
 					}
 					
 					case Engine::B_PAWN: {
 						StoredPiece[3]._Pos = Tile::Pieces_pos[r][c];
-						Piece::FinalPieceOutput[r][c] =(StoredPiece[3]);
+						FinalPieceOutput[r][c] =(StoredPiece[3]);
 						break;
 					}
 					case Engine::B_QUEEN: {
 						StoredPiece[4]._Pos = Tile::Pieces_pos[r][c];
-						Piece::FinalPieceOutput[r][c] =(StoredPiece[4]);
+						FinalPieceOutput[r][c] =(StoredPiece[4]);
 						break;
 					}
 					case Engine::B_ROOK: {
 						StoredPiece[5]._Pos = Tile::Pieces_pos[r][c];
-						Piece::FinalPieceOutput[r][c] =(StoredPiece[5]);
+						FinalPieceOutput[r][c] =(StoredPiece[5]);
 						break;
 					}
 					
 					case Engine::W_BISHOP: {
 						
 						StoredPiece[6]._Pos = Tile::Pieces_pos[r][c];
-						Piece::FinalPieceOutput[r][c] = (StoredPiece[6]);
+						FinalPieceOutput[r][c] = (StoredPiece[6]);
 						break;
 					}
 					case Engine::W_KING: {
 						StoredPiece[7]._Pos = Tile::Pieces_pos[r][c];
-						Piece::FinalPieceOutput[r][c] = (StoredPiece[7]);
+						FinalPieceOutput[r][c] = (StoredPiece[7]);
 						break;
 					}
 					case Engine::W_KNIGHT: {
 						StoredPiece[8]._Pos = Tile::Pieces_pos[r][c];
-						Piece::FinalPieceOutput[r][c] =(StoredPiece[8]);
+						FinalPieceOutput[r][c] =(StoredPiece[8]);
 						break;
 					}
 					
 					case Engine::W_PAWN: {
 						StoredPiece[9]._Pos = Tile::Pieces_pos[r][c];
-						Piece::FinalPieceOutput[r][c] =(StoredPiece[9]);
+						FinalPieceOutput[r][c] =(StoredPiece[9]);
 						break;
 					}
 					case Engine::W_QUEEN: {
 						StoredPiece[10]._Pos = Tile::Pieces_pos[r][c];
-						Piece::FinalPieceOutput[r][c] =(StoredPiece[10]);
+						FinalPieceOutput[r][c] =(StoredPiece[10]);
 						break;
 					}
 					case Engine::W_ROOK: {
 						StoredPiece[11]._Pos = Tile::Pieces_pos[r][c];
-						Piece::FinalPieceOutput[r][c] =(StoredPiece[11]);
+						FinalPieceOutput[r][c] =(StoredPiece[11]);
 						break;
 					}
 
@@ -175,21 +177,24 @@ class PiecePlacer : public BehaviorAdapter {
 
 	void Start() override {
 		PositionMatrixMaker();
+
 	}
 	Rectangle src, dest;
 	void Update() override {
 
-		for (size_t r = 0; r < Engine::Pos_matrix.size(); r++) {
+		for (size_t r = 0; r < 8; r++) {
 
-			for (size_t c = 0; c < Engine::Pos_matrix[r].size(); c++)
+			for (size_t c = 0; c <8; c++)
 			{
-				//TODO Dragging of Objects
-
-				Piece p = Piece::FinalPieceOutput[r][c];
-				src = Rectangle(0, 0, p.icon.height, p.icon.width);
 				
-				dest = Rectangle(0, 0, 100, 100);
-				DrawTexturePro(p.icon, src, dest, { p._Pos.x + 100,p._Pos.y + 100 }, 0.0f, WHITE);
+				Piece p = FinalPieceOutput[r][c];
+				//src = Rectangle(0,0, p.icon.height, p.icon.width);
+				
+				//dest = Rectangle(p._Pos.x + 100, p._Pos.y + 100, 100, 100);
+				//DrawTexturePro(p.icon, src, dest, {0 ,0}, 180.0f, WHITE);
+				std::string text = std::to_string(r)+","+std::to_string(c);
+				DrawTextPro(Engine::font,text.c_str(), Vector2(p._Pos.x + 50,p._Pos.y + 50),Vector2(0,0),0,20,2.0f,BLACK);
+
 			}
 		}
 	}

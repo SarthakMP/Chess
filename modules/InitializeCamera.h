@@ -10,6 +10,7 @@ public:
 		Engine::cam.offset = Vector2(width/2, height/2);
 		Engine::cam.rotation = 0.0f;
 		Engine::cam.zoom = 1.0f;
+		//Engine::cam.target = Vector2(0, 0);
 	}
 
 	void Start() override {

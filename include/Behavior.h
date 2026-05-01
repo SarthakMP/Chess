@@ -1,5 +1,6 @@
 #pragma once
 #include "raylib.h"
+#include "rlgl.h"
 #include<vector>
 #include<string>
 
@@ -50,34 +51,51 @@ public:
 
     static inline Camera2D cam = {0};
     static inline std::vector<std::vector<Engine::en_Piece>> Pos_matrix;
+    static inline Font font;
     
+    void LoadFont() {
+        font = LoadFontEx("./res/SF-Pro.ttf",20,0,0);
+    }
     void AddObjects(Behavior* obj) { objects.push_back(obj); }
     
-    const Camera2D GetCamera() { return cam; }
-
+    const static Camera2D GetCamera() { return cam; }
+    
     void Run() {
         for (auto obj : objects) obj->Start();
         
 		while (!WindowShouldClose()) {
            
             BeginDrawing();
-                ClearBackground(WHITE);
+                ClearBackground(RAYWHITE);
                 BeginMode2D(cam);
-                for (auto obj : objects) {
-                    if (IsMouseButtonPressed(0)) {
-                        obj->OnMouseDown();
-                    }
-                    if (IsMouseButtonReleased(0)) {
-                        obj->OnMouseUp();
-                    }
+                rlPushMatrix();
+                    rlDisableBackfaceCulling();
+                
+                    rlScalef(1.0f, -1.0f, 1.0f);
+                    
+                    
+                        for (auto obj : objects) {
+                            if (IsMouseButtonPressed(0)) {
+                                obj->OnMouseDown();
+                            }
+                            if (IsMouseButtonReleased(0)) {
+                                obj->OnMouseUp();
+                            }
 
-                    if (IsMouseButtonDown(0) && (GetMouseDelta().x != 0 || GetMouseDelta().y != 0)) {
-                        obj->OnMouseDrag();
-                    }
+                            if (IsMouseButtonDown(0) && (GetMouseDelta().x != 0 || GetMouseDelta().y != 0) || _isDragStarted) {
+                                obj->OnMouseDrag();
+                            }
 
-                    obj->Update();  
-                }
+                            obj->Update();  
+                        }
+                    
+                    
+                   
+                    
+
+                    rlPopMatrix();
                 EndMode2D();
+                
 			EndDrawing();
 			_sleep(1);
 		}
