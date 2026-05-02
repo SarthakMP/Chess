@@ -19,22 +19,20 @@ public:
 		indx = ScreenToCoord();
 	}
 	void OnMouseUp() override {
+
+		if (Engine::_isDragStarted) {
+
+		}
+
 		Engine::_isDragStarted = false;
 	}
 	void OnMouseDrag() override {
 		Engine::_isDragStarted = true;
 		Piece PickedUpPiece = PiecePlacer::FinalPieceOutput[indx.y][indx.x];
-		Point orgPos = Point(PickedUpPiece._Pos);
-		Point nxtPos = Point(Mouse::MouseScreenPos);
-		Rectangle PieceHolder = Rectangle(nxtPos.x - 550, nxtPos.y - 550, Tile::tile_w, Tile::tile_h);
-		
-		Rectangle src = Rectangle(0, 0, Tile::tile_w, Tile::tile_h);
-		
-		
-		//nxtPos.x = ClampInt(nxtPos.x, 0, 800);
-		//nxtPos.y = ClampInt(nxtPos.y, 0, 800);
+		Rectangle src = Rectangle(0, 0, PickedUpPiece._icon.width, PickedUpPiece._icon.height);
+		Rectangle dest = Rectangle(0, 0, 100, 100);
 
-		DrawTexturePro(PickedUpPiece.icon, src, PieceHolder, Vector2(0, 0), 0, WHITE);
+		DrawTexturePro(PickedUpPiece._icon, src, dest, Vector2(Mouse::MouseScreenPos.x -450, Mouse::MouseScreenPos.y -450), 180, WHITE);
 		
 	}
 
@@ -55,8 +53,7 @@ public:
 		int coord_y = ClampInt(-LocalMousePos.y, -8, -1);
 		
 		DrawRectanglePro(Tile::Tiles[(coord_x - 1) + 8 * (-coord_y - 1)], {0,0}, 0, GetColor(0xa9a9a973));
-		//std::cout << tmp_Pos <<std::endl;
-		//std::cout << coord_x - 1 <<","<< coord_y +1 << std::endl;
+
 
 	
 

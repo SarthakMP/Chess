@@ -3,6 +3,7 @@
 #include<IconLoader.h>
 #include<TileLoader.h>
 #include<Mouse.h>
+#include<unordered_map>
 
 class PiecePlacer : public BehaviorAdapter {
 
@@ -62,106 +63,38 @@ class PiecePlacer : public BehaviorAdapter {
 		return { piece_color,piece_type};
 	}
 
-	std::vector<Piece> StoredPiece;
 public:
 	static inline std::vector<std::vector<Piece>> FinalPieceOutput;
 private:
+
+	std::unordered_map<Engine::en_Piece, Texture2D> PieceTextures;
+
 	void SetIcons() {
-		StoredPiece.reserve(12);
+
 		
 		FinalPieceOutput.assign(8, std::vector<Piece>(8));
 		
-		int size = IconLoader::Images.size();
-		for (size_t i = 0; i < size; i++) {
-			Piece p;
-			if (ExtractPieceName(IconLoader::ImagesPaths[i])[0] == "black") {
-				p.icon = IconLoader::Images[i];
-				p._name = ExtractPieceName(IconLoader::ImagesPaths[i])[1];
-				StoredPiece.push_back(p);
+		PieceTextures[Engine::B_PAWN] = LoadTexture("../../../res/Icons/black-pawn.png");
+		PieceTextures[Engine::B_ROOK] = LoadTexture("../../../res/Icons/black-rook.png");
+		PieceTextures[Engine::B_KNIGHT] = LoadTexture("../../../res/Icons/black-knight.png");
+		PieceTextures[Engine::B_BISHOP] = LoadTexture("../../../res/Icons/black-bishop.png");
+		PieceTextures[Engine::B_QUEEN] = LoadTexture("../../../res/Icons/black-queen.png");
+		PieceTextures[Engine::B_KING] = LoadTexture("../../../res/Icons/black-king.png");
+
+		PieceTextures[Engine::W_PAWN] = LoadTexture("../../../res/Icons/white-pawn.png");
+		PieceTextures[Engine::W_ROOK] = LoadTexture("../../../res/Icons/white-rook.png");
+		PieceTextures[Engine::W_KNIGHT] = LoadTexture("../../../res/Icons/white-knight.png");
+		PieceTextures[Engine::W_BISHOP] = LoadTexture("../../../res/Icons/white-bishop.png");
+		PieceTextures[Engine::W_QUEEN] = LoadTexture("../../../res/Icons/white-queen.png");
+		PieceTextures[Engine::W_KING] = LoadTexture("../../../res/Icons/white-king.png");
+		
+		for (int r = 7; r >=0; r--) {
+			for (size_t c = 0; c < 8; c++) {
+
+				Engine::en_Piece type = Engine::Pos_matrix[7-r][c];
+
+				FinalPieceOutput[r][c] = Piece(type, Tile::Pieces_pos[r][c], PieceTextures[type]);
 				
-			}
-			else {
-				p.icon = IconLoader::Images[i];
-				p._name = ExtractPieceName(IconLoader::ImagesPaths[i])[1];
-				StoredPiece.push_back(p);
-			}
-
-		}
-
-		for (size_t r = 0; r < 8; r++) {
-			
-			for (size_t c = 0; c < 8; c++)
-			{	
-				switch (Engine::Pos_matrix[r][c]) {
-					
-					case Engine::B_BISHOP: {
-						std::cout << r << "," << c << "\n";
-						StoredPiece[0]._Pos = Tile::Pieces_pos[r][c];
-						FinalPieceOutput[r][c] = (StoredPiece[0]);
-						break;
-					}
-					case Engine::B_KING: {
-						StoredPiece[1]._Pos = Tile::Pieces_pos[r][c];
-						FinalPieceOutput[r][c] = (StoredPiece[1]);
-						break;
-					}
-					case Engine::B_KNIGHT: {
-						StoredPiece[2]._Pos = Tile::Pieces_pos[r][c];
-						FinalPieceOutput[r][c] =(StoredPiece[2]);
-						break;
-					}
-					
-					case Engine::B_PAWN: {
-						StoredPiece[3]._Pos = Tile::Pieces_pos[r][c];
-						FinalPieceOutput[r][c] =(StoredPiece[3]);
-						break;
-					}
-					case Engine::B_QUEEN: {
-						StoredPiece[4]._Pos = Tile::Pieces_pos[r][c];
-						FinalPieceOutput[r][c] =(StoredPiece[4]);
-						break;
-					}
-					case Engine::B_ROOK: {
-						StoredPiece[5]._Pos = Tile::Pieces_pos[r][c];
-						FinalPieceOutput[r][c] =(StoredPiece[5]);
-						break;
-					}
-					
-					case Engine::W_BISHOP: {
-						
-						StoredPiece[6]._Pos = Tile::Pieces_pos[r][c];
-						FinalPieceOutput[r][c] = (StoredPiece[6]);
-						break;
-					}
-					case Engine::W_KING: {
-						StoredPiece[7]._Pos = Tile::Pieces_pos[r][c];
-						FinalPieceOutput[r][c] = (StoredPiece[7]);
-						break;
-					}
-					case Engine::W_KNIGHT: {
-						StoredPiece[8]._Pos = Tile::Pieces_pos[r][c];
-						FinalPieceOutput[r][c] =(StoredPiece[8]);
-						break;
-					}
-					
-					case Engine::W_PAWN: {
-						StoredPiece[9]._Pos = Tile::Pieces_pos[r][c];
-						FinalPieceOutput[r][c] =(StoredPiece[9]);
-						break;
-					}
-					case Engine::W_QUEEN: {
-						StoredPiece[10]._Pos = Tile::Pieces_pos[r][c];
-						FinalPieceOutput[r][c] =(StoredPiece[10]);
-						break;
-					}
-					case Engine::W_ROOK: {
-						StoredPiece[11]._Pos = Tile::Pieces_pos[r][c];
-						FinalPieceOutput[r][c] =(StoredPiece[11]);
-						break;
-					}
-
-
-				}
 			}
 
 		}
@@ -182,18 +115,14 @@ private:
 	Rectangle src, dest;
 	void Update() override {
 
-		for (size_t r = 0; r < 8; r++) {
+		for (size_t r = 0; r <8; r++) {
 
 			for (size_t c = 0; c <8; c++)
 			{
-				
 				Piece p = FinalPieceOutput[r][c];
-				//src = Rectangle(0,0, p.icon.height, p.icon.width);
-				
-				//dest = Rectangle(p._Pos.x + 100, p._Pos.y + 100, 100, 100);
-				//DrawTexturePro(p.icon, src, dest, {0 ,0}, 180.0f, WHITE);
-				std::string text = std::to_string(r)+","+std::to_string(c);
-				DrawTextPro(Engine::font,text.c_str(), Vector2(p._Pos.x + 50,p._Pos.y + 50),Vector2(0,0),0,20,2.0f,BLACK);
+				Rectangle src = Rectangle(0, 0, p._icon.width, p._icon.height);
+				Rectangle dest = Rectangle(0, 0, 100, 100);
+				DrawTexturePro(p._icon, src, dest, Vector2(p._Pos.x +100, p._Pos.y +100), 180, WHITE);
 
 			}
 		}

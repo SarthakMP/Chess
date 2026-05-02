@@ -60,6 +60,8 @@ public:
     
     const static Camera2D GetCamera() { return cam; }
     
+    Vector2 dragStart;
+
     void Run() {
         for (auto obj : objects) obj->Start();
         
@@ -76,14 +78,27 @@ public:
                     
                         for (auto obj : objects) {
                             if (IsMouseButtonPressed(0)) {
+                                dragStart = GetMousePosition();
+                                _isDragStarted = false;
                                 obj->OnMouseDown();
                             }
                             if (IsMouseButtonReleased(0)) {
                                 obj->OnMouseUp();
                             }
 
-                            if (IsMouseButtonDown(0) && (GetMouseDelta().x != 0 || GetMouseDelta().y != 0) || _isDragStarted) {
-                                obj->OnMouseDrag();
+                            if (IsMouseButtonDown(0) ) {
+                                Vector2 current = GetMousePosition();
+
+                                float dist = sqrtf(
+                                    (current.x - dragStart.x) * (current.x - dragStart.x) +
+                                    (current.y - dragStart.y) * (current.y - dragStart.y)
+                                );
+
+                                if (dist > 5.0f || _isDragStarted) {
+                                    _isDragStarted = true;
+                                    obj->OnMouseDrag();
+                                }
+                                
                             }
 
                             obj->Update();  
