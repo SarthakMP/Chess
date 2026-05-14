@@ -5,75 +5,103 @@
 #include<Mouse.h>
 #include<unordered_map>
 
-class PiecePlacer : public BehaviorAdapter {
 
-	
+class PiecePlacer : public BehaviorAdapter {
+public:
+	static inline std::vector<std::vector<Piece>> Pos_matrix;
+private:	
+
+
+
 	void Postion() {
 		
-		Engine::Pos_matrix = {
-			{Engine::B_ROOK ,Engine::B_KNIGHT,Engine::B_BISHOP, Engine::B_KING, Engine::B_QUEEN,Engine::B_BISHOP,Engine::B_KNIGHT,Engine::B_ROOK},
-			{Engine::B_PAWN,Engine::B_PAWN,Engine::B_PAWN,Engine::B_PAWN,Engine::B_PAWN,Engine::B_PAWN,Engine::B_PAWN,Engine::B_PAWN},
-			{Engine::NON,Engine::NON,Engine::NON,Engine::NON,Engine::NON,Engine::NON,Engine::NON,Engine::NON},
-			{Engine::NON,Engine::NON,Engine::NON,Engine::NON,Engine::NON,Engine::NON,Engine::NON,Engine::NON},
-			{Engine::NON,Engine::NON,Engine::NON,Engine::NON,Engine::NON,Engine::NON,Engine::NON,Engine::NON},
-			{Engine::NON,Engine::NON,Engine::NON,Engine::NON,Engine::NON,Engine::NON,Engine::NON,Engine::NON},
-			{Engine::W_PAWN,Engine::W_PAWN,Engine::W_PAWN,Engine::W_PAWN,Engine::W_PAWN,Engine::W_PAWN,Engine::W_PAWN,Engine::W_PAWN},
-			{Engine::W_ROOK ,Engine::W_KNIGHT,Engine::W_BISHOP, Engine::W_KING, Engine::W_QUEEN,Engine::W_BISHOP,Engine::W_KNIGHT,Engine::W_ROOK},
-		};
+		for (size_t r = 0; r < 8; r++) {
+			for (size_t c = 0; c < 8; c++)
+			{
+				Piece p = Piece();
+				if (r >= 2 && r <= 5) { 
+					p._type = Engine::NON; 
+				}
 
-	}
-	
+				if (r < 2) { //BLACK
+					
+					if (r == 0) {
+						if (c == 0 || c == 7) {
+							p._type = Engine::B_ROOK;
 
-	std::vector<std::string> ExtractPieceName(std::string path) {
-		std::string trimmed_path ="";
-		bool _split = false;
-		for (char c : path) { //trimming the path
-			if (c == '\\') {
-				_split = true;
-				continue;
-			}
+						}
+						else if (c == 1 || c == 6) {
+							p._type = Engine::B_KNIGHT;
+						}
+						else if (c == 2 || c == 5) {
+							p._type = Engine::B_BISHOP;
+						}
+						else if (c == 3) {
+							p._type = Engine::B_QUEEN;
+						}
+						else if (c == 4) {
+							p._type = Engine::B_KING;
+						}
 
-			if (_split) {
-				if (c != '.')
-					trimmed_path += c;
-				else
-					break;
+					}
+					else if (r == 1) {
+						p._type = Engine::B_PAWN;
+					}
+					
+				}
+
+				if (r > 5) { //WHITE
+					if (r == 7) {
+						if (c == 0 || c == 7) {
+							p._type = Engine::W_ROOK;
+
+						}
+						else if (c == 1 || c == 6) {
+							p._type = Engine::W_KNIGHT;
+						}
+						else if (c == 2 || c == 5) {
+							p._type = Engine::W_BISHOP;
+						}
+						else if (c == 3) {
+							p._type = Engine::W_QUEEN;
+						}
+						else if (c == 4) {
+							p._type = Engine::W_KING;
+						}
+
+					}
+					else if(r ==6) {
+						p._type = Engine::W_PAWN;
+					}
+				}
+
+				p._icon = PieceTextures[p._type];
+				p._Pos = Tile::Pieces_pos[r][c];
+				Pos_matrix[r][c] = p;
 			}
 
 		}
-		_split = false;
-		std::string piece_type="";
-		std::string piece_color = "";
-		for (char c : trimmed_path) {//trimmed name
-			if (c == '-') {
-				_split = true;
-				continue;
-			}
-			else if (c != '-' && _split == false) {
-				piece_color += c;
-			}
 
-			if (_split) {
-				piece_type += c;
-			}
-
-		}
-
-
-		return { piece_color,piece_type};
 	}
 
 public:
-	static inline std::vector<std::vector<Piece>> FinalPieceOutput;
+	static inline void PrintPosMatrix() {
+		for (size_t r = 0; r < 8; r++) {
+
+			for (size_t c = 0; c < 8; c++)
+			{
+				std::cout << Pos_matrix[r][c]._Pos << " ";
+			}
+			std::cout << "\n";
+		}
+	}
+
 private:
 
 	std::unordered_map<Engine::en_Piece, Texture2D> PieceTextures;
 
 	void SetIcons() {
 
-		
-		FinalPieceOutput.assign(8, std::vector<Piece>(8));
-		
 		PieceTextures[Engine::B_PAWN] = LoadTexture("../../../res/Icons/black-pawn.png");
 		PieceTextures[Engine::B_ROOK] = LoadTexture("../../../res/Icons/black-rook.png");
 		PieceTextures[Engine::B_KNIGHT] = LoadTexture("../../../res/Icons/black-knight.png");
@@ -88,44 +116,47 @@ private:
 		PieceTextures[Engine::W_QUEEN] = LoadTexture("../../../res/Icons/white-queen.png");
 		PieceTextures[Engine::W_KING] = LoadTexture("../../../res/Icons/white-king.png");
 		
-		for (int r = 7; r >=0; r--) {
-			for (size_t c = 0; c < 8; c++) {
-
-				Engine::en_Piece type = Engine::Pos_matrix[7-r][c];
-
-				FinalPieceOutput[r][c] = Piece(type, Tile::Pieces_pos[r][c], PieceTextures[type]);
-				
-			}
-
-		}
-	
-
 	}
 
 	void PositionMatrixMaker() {
-		Engine::Pos_matrix.reserve(64);
-		Postion();
+		Pos_matrix.assign(8, std::vector<Piece>(8));
 		SetIcons();
+		Postion();
+	}
+
+
+	int coord_x = 0, coord_y = 0;
+	void OnMouseDown() override {
+		Point indx = Mouse::ScreenToCoord(Mouse::MouseScreenPos.x, Mouse::MouseScreenPos.y);
+		coord_x = Engine::ClampInt(indx.x, 0, 7);
+		coord_y = Engine::ClampInt(indx.y, 0, 7);
 	}
 
 	void Start() override {
 		PositionMatrixMaker();
-
 	}
-	Rectangle src, dest;
 	void Update() override {
-
+		
 		for (size_t r = 0; r <8; r++) {
 
 			for (size_t c = 0; c <8; c++)
 			{
-				Piece p = FinalPieceOutput[r][c];
-				Rectangle src = Rectangle(0, 0, p._icon.width, p._icon.height);
+				
+				Piece* p = &Pos_matrix[r][c];
+				Rectangle src = Rectangle(0, 0, p->_icon.width, p->_icon.height);
 				Rectangle dest = Rectangle(0, 0, 100, 100);
-				DrawTexturePro(p._icon, src, dest, Vector2(p._Pos.x +100, p._Pos.y +100), 180, WHITE);
+				if (Pos_matrix[r][c].isDragging == false) {
+					DrawTexturePro(p->_icon, src, dest, Vector2(p->_Pos.x + 100, p->_Pos.y + 100), 180, WHITE);
+				}
 
 			}
 		}
+
+
+	}
+
+	void OnDestroy() override {
+
 	}
 
 };

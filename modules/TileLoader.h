@@ -1,6 +1,7 @@
 #pragma once
 #include"Behavior.h"
 #include<iostream> //DEBUGGING ONLY
+#include<Point.h>
 static class Tile : public BehaviorAdapter {
 	
 	Color White = Color(255, 255, 255, 255);
@@ -11,7 +12,7 @@ static class Tile : public BehaviorAdapter {
 
 public:
 	static const int tile_h = 100, tile_w = 100;
-	static inline std::vector<std::vector<Vector2>> Pieces_pos;
+	static inline std::vector<std::vector<Point>> Pieces_pos;
 	static inline std::vector<Rectangle> Tiles;
 private:
 	
@@ -19,12 +20,11 @@ private:
 	void CreateTiles() {
 
 		Tiles.reserve(64);
-		Pieces_pos.assign(8, std::vector<Vector2>(8, Vector2(0, 0)));
+		Pieces_pos.assign(8, std::vector<Point>(8, Point(0, 0)));
 
 		for (int r = -4; r < 4; r++) {
 			for (int c = -4; c < 4; c++) {
-				Vector2 pos = { c * 100.0f,r *100.0f};
-				std::cout << '[' << pos.x << "," << pos.y<<']' << " ";
+				Point pos = Point( c * 100.0f,r *100.0f);
 				Rectangle Tile = Rectangle(pos.x, pos.y, tile_w-1, tile_h-1);
 				Tiles.push_back(Tile);
 				Pieces_pos[r + 4][c + 4] = pos;

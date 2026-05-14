@@ -7,6 +7,11 @@
 class Mouse : public BehaviorAdapter {
 
 public:
+	static inline Point ScreenToCoord(double x, double y) {
+		Vector2 CoorToIndex = { x / Tile::tile_w - 1 ,y / Tile::tile_h - 1 }; // -1 for [1,8] -> [0,7] 
+		return Point(CoorToIndex);
+	}
+
 	static inline Vector2 MouseScreenPos;
 
 	static inline Vector2 ScreenToWorld(Vector2 screen, const Camera2D cam) {

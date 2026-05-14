@@ -11,7 +11,7 @@ public:
     virtual void OnMouseDown() = 0;
     virtual void OnMouseUp() = 0;
     virtual void OnMouseDrag() = 0;
-
+    virtual void OnDestroy() = 0;
 };
 
 class BehaviorAdapter : public Behavior {
@@ -21,14 +21,30 @@ public:
     void OnMouseDown() override {}
     void OnMouseUp() override {}
     void OnMouseDrag() override {}
+    void OnDestroy() override{}
 };
 
 class Engine {
 
     std::vector<Behavior*> objects;
-   
+    bool isGameStopped = false;
+
+
 
 public:
+
+    static int ClampInt(int value, int min, int max) {
+        return (value <= min) ? min : (value >= max) ? max : value;
+    }
+
+    template<typename T>
+    static void Swap(T* a, T* b) {
+        T tmp = *a;
+        *a = *b;
+        *b = tmp;
+
+    }
+
     static inline bool  _isDragStarted = false;
     enum en_Piece
     {
@@ -50,7 +66,7 @@ public:
     };
 
     static inline Camera2D cam = {0};
-    static inline std::vector<std::vector<Engine::en_Piece>> Pos_matrix;
+   
     static inline Font font;
     
     void LoadFont() {
@@ -64,7 +80,7 @@ public:
 
     void Run() {
         for (auto obj : objects) obj->Start();
-        
+        SetTargetFPS(30);
 		while (!WindowShouldClose()) {
            
             BeginDrawing();
@@ -114,6 +130,10 @@ public:
 			EndDrawing();
 			_sleep(1);
 		}
+        
+        if (isGameStopped) {
+            for (auto obj : objects) obj->OnDestroy();
+        }
 
     }
 
